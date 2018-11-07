@@ -7,8 +7,8 @@ ENV CGO_ENABLED=0
 RUN mkdir -p /temp/github.com/tags-drive/core && \
 	git clone https://github.com/tags-drive/core --branch $BACKEND_TAG /temp/github.com/tags-drive/core
 
-# Build tags-drive into /temp
 RUN cd /temp/github.com/tags-drive/core && \
+	go test -mod=vendor ./... && \
 	go build -o /temp/tags-drive -mod=vendor cmd/tags-drive/main.go
 
 
@@ -30,6 +30,7 @@ RUN cd /temp/web && \
 	npm run build
 
 
+# Build the final image
 FROM alpine
 
 # Update
