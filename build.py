@@ -7,31 +7,43 @@ tag = os.environ.get("TAG", default="")
 backendTag = os.environ.get("", default="")
 frontendTag = os.environ.get("NAME", default="")
 
+
+def hasPrefix(s: str, prefix: str) -> bool:
+    if len(s) < len(prefix):
+        return False
+
+    for i in range(len(prefix)):
+        if s[i] != prefix[i]:
+            return False
+
+    return True
+
+
 try:
     for arg in sys.argv[1:]:
         # name
-        if arg.find("--name") != -1 or arg.find("-n") != -1:
+        if hasPrefix(arg, "--name") or hasPrefix(arg, "-n"):
             temp = arg.split("=")[1:]
             if len(temp) == 0:
                 raise Exception("bad syntax")
 
             name = temp[0]
         # tag
-        elif arg.find("--tag") != -1 or arg.find("-t") != -1:
+        elif hasPrefix(arg, "--tag") or hasPrefix(arg, "-t"):
             temp = arg.split("=")[1:]
             if len(temp) == 0:
                 raise Exception("bad syntax")
 
             tag = temp[0]
         # backend tag
-        elif arg.find("--backend-tag") != -1 or arg.find("-b") != -1:
+        elif hasPrefix(arg, "--backend-tag") or hasPrefix(arg, "-b"):
             temp = arg.split("=")[1:]
             if len(temp) == 0:
                 raise Exception("bad syntax")
 
             backendTag = temp[0]
         # frontend tag
-        elif arg.find("--frontend-tag") != -1 or arg.find("-f") != -1:
+        elif hasPrefix(arg, "--frontend-tag") or hasPrefix(arg, "-f"):
             temp = arg.split("=")[1:]
             if len(temp) == 0:
                 raise Exception("bad syntax")
