@@ -9,7 +9,7 @@ RUN mkdir -p /temp/github.com/tags-drive/core && \
 
 RUN cd /temp/github.com/tags-drive/core && \
 	go test -mod=vendor ./... && \
-	go build -o /temp/tags-drive -mod=vendor cmd/tags-drive/main.go
+	go build -o /temp/tags-drive -mod=vendor main.go
 
 
 # Build frontend
