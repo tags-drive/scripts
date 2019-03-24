@@ -5,7 +5,7 @@ ARG BACKEND_TAG="master"
 ENV CGO_ENABLED=0
 
 RUN mkdir -p /temp/github.com/tags-drive/core && \
-	git clone https://github.com/tags-drive/core --branch $BACKEND_TAG /temp/github.com/tags-drive/core
+	git clone --branch $BACKEND_TAG --depth 1 --single-branch https://github.com/tags-drive/core /temp/github.com/tags-drive/core
 
 RUN cd /temp/github.com/tags-drive/core && \
 	go test -mod=vendor ./... && \
@@ -19,10 +19,10 @@ ARG FRONTEND_TAG="master"
 
 # Install git
 RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
+	apk add --no-cache bash git openssh
 
 RUN mkdir -p /temp/web && \
-	git clone https://github.com/tags-drive/web --branch $FRONTEND_TAG /temp/web
+	git clone --branch $FRONTEND_TAG --depth 1 --single-branch https://github.com/tags-drive/web /temp/web
 
 # Build into /temp/web/dist
 RUN cd /temp/web && \
