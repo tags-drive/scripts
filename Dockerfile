@@ -1,5 +1,5 @@
 # Build backend
-FROM golang:1.11.2 as build-backend
+FROM golang:1.12 as build-backend
 
 ARG BACKEND_TAG="master"
 ENV CGO_ENABLED=0
