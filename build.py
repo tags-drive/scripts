@@ -60,6 +60,6 @@ if name == "" or tag == "" or backendTag == "" or frontendTag == "":
     print("[ERR] name and tags must be provided")
     exit(1)
 
-os.system(f"docker build -t {name}:{tag} " +
+os.system(f"docker build -t {name}:{tag} --no-cache " +
           f"--build-arg BACKEND_TAG={backendTag} " +
           f"--build-arg FRONTEND_TAG={frontendTag} .")
