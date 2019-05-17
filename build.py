@@ -1,65 +1,54 @@
 import os
-import sys
+import argparse
 
-name = os.environ.get("NAME", default="")
-tag = os.environ.get("TAG", default="")
-#
-backendTag = os.environ.get("", default="")
-frontendTag = os.environ.get("NAME", default="")
+# Init args
+parser = argparse.ArgumentParser(description="This script builds a Docker image of Tags Drive")
 
+parser.add_argument("--name",
+                    type=str,
+                    default="tags-drive",
+                    help="name of a Docker image (default is 'tags-drive')")
+parser.add_argument("--tag",
+                    type=str,
+                    default="latest",
+                    help="tag of a Docker image (default is 'lastest')")
+parser.add_argument("--backend-tag",
+                    type=str,
+                    default="master",
+                    help="name of Git branch or tag of the repo with backend part of Tags Drive")
+parser.add_argument("--frontend-tag",
+                    type=str,
+                    default="master",
+                    help="name of Git branch or tag of the repo with frontend part of Tags Drive")
+parser.add_argument("--no-cache",
+                    default=False,
+                    action="store_true",
+                    help="use --no-cache for 'docker build' command")
 
-def hasPrefix(s: str, prefix: str) -> bool:
-    if len(s) < len(prefix):
-        return False
+# Parse args
+args = parser.parse_args()
 
-    for i in range(len(prefix)):
-        if s[i] != prefix[i]:
-            return False
+name = args.name
+tag = args.tag
+backendTag = args.backend_tag
+frontendTag = args.frontend_tag
+noCache = args.no_cache
 
-    return True
-
-
-try:
-    for arg in sys.argv[1:]:
-        # name
-        if hasPrefix(arg, "--name") or hasPrefix(arg, "-n"):
-            temp = arg.split("=")[1:]
-            if len(temp) == 0:
-                raise Exception("bad syntax")
-
-            name = temp[0]
-        # tag
-        elif hasPrefix(arg, "--tag") or hasPrefix(arg, "-t"):
-            temp = arg.split("=")[1:]
-            if len(temp) == 0:
-                raise Exception("bad syntax")
-
-            tag = temp[0]
-        # backend tag
-        elif hasPrefix(arg, "--backend-tag") or hasPrefix(arg, "-b"):
-            temp = arg.split("=")[1:]
-            if len(temp) == 0:
-                raise Exception("bad syntax")
-
-            backendTag = temp[0]
-        # frontend tag
-        elif hasPrefix(arg, "--frontend-tag") or hasPrefix(arg, "-f"):
-            temp = arg.split("=")[1:]
-            if len(temp) == 0:
-                raise Exception("bad syntax")
-
-            frontendTag = temp[0]
-
-except Exception as e:
-    print("[ERR]", e)
-    exit(1)
-
-print(f"Name: {name}\nTag: {tag}\nBACKEND_TAG: {backendTag}\nFRONTEND_TAG: {frontendTag}")
+# Display passed args
+print(f"Name: {name}\nTag: {tag}\nBackend tag: {backendTag}\nFrontend tag: {frontendTag}\nUse '--no-cache': {noCache}")
 
 if name == "" or tag == "" or backendTag == "" or frontendTag == "":
     print("[ERR] name and tags must be provided")
     exit(1)
 
-os.system(f"docker build -t {name}:{tag} --no-cache " +
-          f"--build-arg BACKEND_TAG={backendTag} " +
-          f"--build-arg FRONTEND_TAG={frontendTag} .")
+# Build command
+command = f"docker build -t {name}:{tag} "
+
+if noCache:
+    command += "--no-cache "
+
+command += (f"--build-arg BACKEND_TAG={backendTag} " +
+            f"--build-arg FRONTEND_TAG={frontendTag} " +
+            ".")
+
+os.system(command)

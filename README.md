@@ -1,18 +1,19 @@
 # Scripts
 
-This repository contains Dockerfile and scripts for building docker images of **Tags Drive**
+This repository contains Dockerfile and scripts for building a Docker image of **Tags Drive**.
 
 ## Flags
 
-| Flag               | Usage                                   | Example       |
-| ------------------ | --------------------------------------- | ------------- |
-| -n, --name         | name of docker image                    | -n=tags-drive |
-| -t, --tag          | tag of docker image                     | -t=v0.5       |
-| -b, --backend-tag  | tag (or branch), which should be cloned | -b=master     |
-| -f, --frontend-tag | tag (or branch), which should be cloned | -b=v0.4.5     |
+| Flag           | Usage                                      | Default    | Example                   |
+| -------------- | ------------------------------------------ | ---------- | ------------------------- |
+| --name         | name of a Docker image                     | tags-drive | `--name="tags-drive"`     |
+| --tag          | tag of a Docker image                      | latest     | `--tag="0.5.3"`           |
+| --backend-tag  | tag (or branch), which should be cloned    | master     | `--backend-tag="master"`  |
+| --frontend-tag | tag (or branch), which should be cloned    | master     | `--frontend-tag="v0.5.3"` |
+| --no-cache     | use `--no-cache` option for `docker build` | false      | `--no-cache`              |
 
 ## Example
 
 ```sh
-python build.py -n="tags-drive" -t="v0.5" -b="master" -f="v0.4.5"
+python build.py --name="tags-drive" --tag="0.5.3" --backend-tag="master" --frontend-tag="v0.5.3" --no-cache
 ```
