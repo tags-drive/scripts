@@ -1,25 +1,24 @@
 # Build backend
-FROM golang:1.12 as build-backend
+FROM golang:1.12.5 as build-backend
 
 ARG BACKEND_TAG="master"
-ENV CGO_ENABLED=0
 
-RUN mkdir -p /temp/github.com/tags-drive/core && \
-	git clone --branch $BACKEND_TAG --depth 1 --single-branch https://github.com/tags-drive/core /temp/github.com/tags-drive/core
+ENV CGO_ENABLED=0 \
+	GOOS=linux \
+	GOARCH=amd64
 
-RUN cd /temp/github.com/tags-drive/core && \
+RUN mkdir /temp && \
+	git clone --branch $BACKEND_TAG --depth 1 --single-branch https://github.com/tags-drive/core /temp
+
+RUN cd /temp && \
 	go test -mod=vendor ./... && \
-	go build -o /temp/tags-drive -mod=vendor ./cmd/tags-drive/main.go
+	go build -o tags-drive -mod=vendor ./cmd/tags-drive/main.go
 
 
 # Build frontend
-FROM node:alpine as build-frontend
+FROM node:12.2.0 as build-frontend
 
 ARG FRONTEND_TAG="master"
-
-# Install git
-RUN apk update && apk upgrade && \
-	apk add --no-cache bash git openssh
 
 RUN mkdir -p /temp/web && \
 	git clone --branch $FRONTEND_TAG --depth 1 --single-branch https://github.com/tags-drive/web /temp/web
@@ -31,15 +30,17 @@ RUN cd /temp/web && \
 
 
 # Build the final image
-FROM alpine
+FROM alpine:3.9.4
 
-# Update
-RUN apk update && apk upgrade
+RUN apk update && \
+	apk add --no-cache tzdata ca-certificates
 
-RUN mkdir /app && mkdir /app/web
 WORKDIR /app
+RUN mkdir /app/web
 
 COPY --from=build-backend /temp/tags-drive .
 COPY --from=build-frontend /temp/web/dist ./web
 
-ENTRYPOINT [ "/app/tags-drive" ]
+EXPOSE 80
+
+ENTRYPOINT [ "./tags-drive" ]
