@@ -7,10 +7,10 @@ ENV CGO_ENABLED=0 \
 	GOOS=linux \
 	GOARCH=amd64
 
-RUN mkdir /temp && \
-	git clone --branch $BACKEND_TAG --depth 1 --single-branch https://github.com/tags-drive/core /temp
+RUN mkdir /build && \
+	git clone --branch $BACKEND_TAG --depth 1 --single-branch https://github.com/tags-drive/core /build
 
-RUN cd /temp && \
+RUN cd /build && \
 	go test -mod=vendor ./... && \
 	go build -o tags-drive -mod=vendor ./cmd/tags-drive/main.go
 
@@ -20,11 +20,11 @@ FROM node:12.2.0 as build-frontend
 
 ARG FRONTEND_TAG="master"
 
-RUN mkdir -p /temp/web && \
-	git clone --branch $FRONTEND_TAG --depth 1 --single-branch https://github.com/tags-drive/web /temp/web
+RUN mkdir -p /build && \
+	git clone --branch $FRONTEND_TAG --depth 1 --single-branch https://github.com/tags-drive/web /build
 
-# Build into /temp/web/dist
-RUN cd /temp/web && \
+# Build into /build/dist
+RUN cd /build && \
 	npm i && \
 	npm run build
 
@@ -38,8 +38,8 @@ RUN apk update && \
 WORKDIR /app
 RUN mkdir /app/web
 
-COPY --from=build-backend /temp/tags-drive .
-COPY --from=build-frontend /temp/web/dist ./web
+COPY --from=build-backend /build/tags-drive .
+COPY --from=build-frontend /build/dist ./web
 
 EXPOSE 80
 
