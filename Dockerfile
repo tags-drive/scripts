@@ -29,7 +29,7 @@ RUN mkdir /build && \
 RUN bash -c "nohup /minio/minio server data --quiet &" && \
 	cd /build && \
 	go test -v -mod=vendor ./... && \
-	go build -o tags-drive -mod=vendor ./cmd/tags-drive/main.go
+	go build -o tags-drive -mod=vendor main.go
 
 
 # Build frontend
