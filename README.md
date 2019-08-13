@@ -1,5 +1,9 @@
 # Scripts
 
+This repository is archived. All scripts are stored in `scripts` folder in [tags-drive/tags-drive](https://github.com/tags-drive/tags-drive) repository.
+
+---
+
 This repository contains Dockerfile and scripts for building a Docker image of **Tags Drive**.
 
 ## Flags
